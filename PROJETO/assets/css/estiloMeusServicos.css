@@ -1,0 +1,6 @@
+.card-text {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    max-height: 100px;
+    overflow: hidden;
+}

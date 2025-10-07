@@ -1,0 +1,29 @@
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .perfil-container {
+            background-color: #f0f0f0; /* Cinza claro */
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+
+        .perfil-table th, .perfil-table td {
+            padding: 15px;
+            text-align: left;
+        }
+
+
+        .perfil-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+
+        .perfil-container h2 {
+            color: #343a40;
+        }
+
+        .btn-logout {
+            width: 100%;
+        }
+

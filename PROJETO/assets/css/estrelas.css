@@ -1,0 +1,25 @@
+.estrelas input[type="radio"]{
+    display: none;
+}
+.estrelas label i.bi:before{
+    color:#FC0;
+    font-size: 50px;
+}
+
+.estrelas input[type="radio"]:checked ~ label i.bi:before{
+    color:#CCC;
+}
+
+.zero_estrela{
+    display:none;
+}
+
+.estrela-avaliacao-preenchida{
+    font-size: 60px;
+    color:#FC0;
+}
+
+.estrela-avaliacao-vazia{
+    font-size: 60px;
+    color:#CCC;
+}

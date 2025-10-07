@@ -1,0 +1,58 @@
+/* Arquivo CSS para estilização */
+.yellow-bg {
+    background-color: #ffcc00;
+    padding: 10px;
+    border-radius: 5px;
+    color: #000;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.service-container {
+    margin-bottom: 20px;
+    padding: 15px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.service-container img {
+    max-width: 300px;  /* Imagem maior */
+    max-height: 200px;
+    margin-top: 10px;
+}
+
+.service-info {
+    margin-bottom: 10px;
+}
+
+.botao-prestador-responsavel {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border-radius: 10px;
+    background-color: #fdfdfd;
+    border: 1px solid #ddd;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    color: #333;
+    font-size: 1rem;
+    text-align: left;
+    width: 100%;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.botao-prestador-responsavel:hover {
+    background-color: #f9da7ccc;
+    transform: translateY(-1px);
+}
+
+.botao-prestador-responsavel i {
+    font-size: 1.5rem;
+    color: #FFD145;
+}
+
+
