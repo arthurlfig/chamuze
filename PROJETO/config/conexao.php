@@ -7,7 +7,7 @@ if (!function_exists('conectaDB')) {
 
         if ($conexao === null) {
             $host = 'localhost:3306';
-            $db_name = 'bd_chamuze_fisico';
+            $db_name = 'chamuze';
             $user_name = 'root';
             $password = '';
 
