@@ -16,7 +16,7 @@ class Servico
     {
         $sql = "INSERT INTO servico (titulo, descricao, categoria, local_servico, img_servico, preco, id_solicitante) VALUES (?, ?, ?, ?, ?, ?, ?)";
         $stmt = $this->conexao->prepare($sql);
-        $stmt->bind_param("sssssdd", $titulo, $descricao, $categoria, $regiao, $caminhoImgServico, $preco, $idSolicitante);
+        $stmt->bind_param("sssssdi", $titulo, $descricao, $categoria, $regiao, $caminhoImgServico, $preco, $idSolicitante);
         return $stmt->execute();
     }
 

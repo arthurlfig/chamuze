@@ -6,18 +6,7 @@
   <component name="ChangeListManager">
     <list default="true" id="7130353a-d800-48a4-b22f-5b98d288774d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DOCUMENTACAO/Banco_de_dados/BD_Chamuze_Conceitual.drawio" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/DOCUMENTACAO/Banco_de_dados/BD_Chamuze_Conceitual.drawio.png" beforeDir="false" afterPath="$PROJECT_DIR$/DOCUMENTACAO/Banco_de_dados/BD_Chamuze_Conceitual.drawio.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DOCUMENTACAO/Banco_de_dados/BD_Chamuze_fisico.sql" beforeDir="false" afterPath="$PROJECT_DIR$/DOCUMENTACAO/Banco_de_dados/BD_Chamuze_fisico.sql" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DOCUMENTACAO/Banco_de_dados/DB_Chamuze_Logico.drawio" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/DOCUMENTACAO/Banco_de_dados/DB_Chamuze_Logico.drawio.png" beforeDir="false" afterPath="$PROJECT_DIR$/DOCUMENTACAO/Banco_de_dados/DB_Chamuze_Logico.drawio.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/DOCUMENTACAO/Banco_de_dados/chamuze.sql" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/DOCUMENTACAO/PBB_Chamuze/PBB_ChamuZe.docx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PROJETO/assets/js/historico.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/PROJETO/cadastroEscolha.php" beforeDir="false" afterPath="$PROJECT_DIR$/PROJETO/cadastroEscolha.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PROJETO/controller/loginController.php" beforeDir="false" afterPath="$PROJECT_DIR$/PROJETO/controller/loginController.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PROJETO/login.php" beforeDir="false" afterPath="$PROJECT_DIR$/PROJETO/login.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PROJETO/sessaoExpirada.php" beforeDir="false" afterPath="$PROJECT_DIR$/PROJETO/sessaoExpirada.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PROJETO/classes/Servico.php" beforeDir="false" afterPath="$PROJECT_DIR$/PROJETO/classes/Servico.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,23 +28,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "PHP Script.sessaoExpirada.php.executor": "Debug",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "main",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/xampp/htdocs/ChamuZe",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;PHP Script.sessaoExpirada.php.executor&quot;: &quot;Debug&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/xampp/htdocs/ChamuZe&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\xampp\htdocs\ChamuZe\PROJETO\view" />
@@ -90,10 +79,23 @@
       <workItem from="1747682098898" duration="48000" />
       <workItem from="1747682149821" duration="24000" />
       <workItem from="1749050636623" duration="130000" />
+      <workItem from="1760396689695" duration="27000" />
+      <workItem from="1760396718629" duration="754000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="php">
+          <url>file://$PROJECT_DIR$/PROJETO/controller/solicitarServicoController.php</url>
+          <line>25</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
