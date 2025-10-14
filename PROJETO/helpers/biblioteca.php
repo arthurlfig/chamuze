@@ -1,6 +1,8 @@
 <?php
-include "../config/conexao.php";
-$conexao = conectaDB();
+require_once __DIR__ . '/../config/Conexao.php';
+
+$conexao = Conexao::getInstance()->getConexao();
+
 
 function buscarUsuarioPeloId($id_usuario){
     global $conexao;

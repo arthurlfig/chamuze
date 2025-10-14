@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../config/Conexao.php';
+
 class Cadastro
 {
     private $nome;
@@ -32,8 +34,7 @@ class Cadastro
         $imgRg = null,
         $chavePix = null
     ) {
-        include "../config/conexao.php";
-        $this->conexao = conectaDB();
+        $this->conexao = Conexao::getInstance()->getConexao();
         $this->nome = $nome;
         $this->sobrenome = $sobrenome;
         $this->email = $email;

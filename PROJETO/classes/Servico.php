@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../config/Conexao.php';
 class Servico
 {
     private $conexao;
@@ -7,8 +8,7 @@ class Servico
     public function __construct()
     {
         // Ajustando o caminho para incluir o arquivo de conexão corretamente
-        include __DIR__ . '/../config/conexao.php'; // Usando __DIR__ para garantir o caminho correto
-        $this->conexao = conectaDB();
+        $this->conexao = Conexao::getInstance()->getConexao();
     }
 
     // Salvar serviço no banco

@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../config/Conexao.php';
+
 class Proposta{
     private $id_proposta;
     private $id_servico; 
@@ -10,8 +12,7 @@ class Proposta{
     private $conexao; 
 
     public function __construct(){
-        include __DIR__ . '/../config/conexao.php';
-        $this->conexao = conectaDB();
+        $this->conexao = Conexao::getInstance()->getConexao();
 
     }
 

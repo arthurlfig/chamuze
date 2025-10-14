@@ -1,45 +1,42 @@
 <?php
-class Login{
+// Inclui a conexão apenas uma vez no topo do arquivo
+require_once __DIR__ . '/../config/Conexao.php';
+
+class Login {
     private $emailUsuario;
     private $senhaUsuario;
     private $conexao;
 
+    // Construtor recebe os dados do login
     public function __construct($emailUsuario, $senhaUsuario){
         $this->emailUsuario = $emailUsuario;
         $this->senhaUsuario = $senhaUsuario;
-        include "../config/conexao.php";  // Conectando ao banco de dados
-        $this->conexao = conectaDB(); // Estabelecendo a conexão com o banco
+        // Pega a conexão do Singleton
+        $this->conexao = Conexao::getInstance()->getConexao();
     }
 
+    // Busca usuário no banco pelo email
     public function buscarNoBanco(){
-        // Prepara a consulta SQL para buscar o e-mail e a senha do usuário
         $sql = "SELECT * FROM usuario WHERE email = ?";
-        $stmt = $this->conexao->prepare($sql); 
-    
-        // Associa o parâmetro (e-mail) à consulta preparada para evitar SQL Injection
-        $stmt->bind_param("s", $this->emailUsuario); 
-    
-        // Executa a consulta preparada
+        $stmt = $this->conexao->prepare($sql);
+        $stmt->bind_param("s", $this->emailUsuario);
         $stmt->execute();
-    
-        // Obtém o resultado da execução da consulta
-        $resultado = $stmt->get_result(); 
-    
+        $resultado = $stmt->get_result();
+
         if ($resultado->num_rows > 0){
-            // Retorna o primeiro resultado encontrado como um array associativo
-            return $resultado->fetch_assoc();
+            return $resultado->fetch_assoc(); // retorna array associativo
         } else{
             return false;
         }
     }
 
+    // Realiza logout do usuário
     public function realizarLogout(){
         if(isset($_SESSION['id'])){
             session_destroy();
-            header('location:../index.php');
+            header('Location: ../index.php');
+            exit; // garante que nada mais seja executado após o redirect
         }
     }
 }
-
-
 ?>
