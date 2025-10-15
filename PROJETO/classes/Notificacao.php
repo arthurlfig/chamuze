@@ -1,10 +1,11 @@
 <?php
+require_once __DIR__ . '/../config/Conexao.php';
+
 class Notificacao {
     private $conn;
 
     public function __construct() {
-        include __DIR__ . '/../config/conexao.php';
-        $this->conn = conectaDB();
+        $this->conn = Conexao::getInstance()->getConexao();
     }
 
     /**
@@ -14,13 +15,11 @@ class Notificacao {
         try {
             $sql = "INSERT INTO notificacoes (id_usuario, tipo, mensagem, id_servico, lida, data_criacao)
                     VALUES (?, ?, ?, ?, 0, NOW())";
-            
+
             $stmt = $this->conn->prepare($sql);
-
-            // Se id_servico for null, usa NULL
             $id_servico_param = $id_servico ?? null;
-
             $stmt->bind_param("issi", $id_usuario, $tipo, $mensagem, $id_servico_param);
+
             return $stmt->execute();
         } catch (mysqli_sql_exception $e) {
             error_log("Erro ao criar notificação: " . $e->getMessage());

@@ -1,8 +1,9 @@
 <?php
 session_start();
-include "../classes/Servico.php";
-include "../classes/Notificacao.php";
-include "../helpers/biblioteca.php";
+
+require_once "../classes/Servico.php";
+require_once "../classes/Notificacao.php";
+require_once "../helpers/biblioteca.php";
 
 // Verificação de acesso
 verificarSessaoExpirada();
@@ -14,7 +15,7 @@ if (!isset($_POST['id_servico'])) {
 }
 
 $id_servico = $_POST['id_servico'];
-$id_prestador = $_SESSION['usuario']['id_usuario'];// ID do prestador logado
+$id_prestador = $_SESSION['usuario']['id_usuario']; // ID do prestador logado
 
 $servico = new Servico();
 $dadosServico = $servico->buscarPorId($id_servico);
@@ -31,7 +32,7 @@ if ($atualizado) {
     // Cria uma notificação para o solicitante
     $notificacao = new Notificacao();
 
-    $id_solicitante = $dadosServico['id_solicitante']; // esse campo deve existir na tabela servicos
+    $id_solicitante = $dadosServico['id_solicitante']; // esse campo deve existir na tabela servico
     $mensagem = "Seu serviço \"{$dadosServico['titulo']}\" foi aceito por um prestador!";
 
     $notificacao->criar(

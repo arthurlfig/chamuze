@@ -1,162 +1,157 @@
 <?php
+require_once __DIR__ . '/../config/Conexao.php';
+
 class Usuario
 {
-    private $connection;
+    private $conexao;
+
     public function __construct()
     {
-        include __DIR__ . '/../config/conexao.php';
-        $this->connection = conectaDB();
+        // Conexão via Singleton
+        $this->conexao = Conexao::getInstance()->getConexao();
     }
-    public function buscarTodos($tipoUsuario)
-    {
-        if ($tipoUsuario == "prestador") {
-            $sql = "SELECT 
-                            usuario.id_usuario, usuario.nome, usuario.sobrenome, usuario.email, usuario.cpf, usuario.telefone,
-                            usuario.nacionalidade, usuario.data_nascimento, usuario.nota_reputacao, usuario.genero,
-                            prestador.cnpj, prestador.img_rg, prestador.chave_pix, prestador.status_avaliacao,
-                            endereco.estado, endereco.cidade, endereco.bairro, endereco.logradouro, endereco.numero_casa, endereco.cep
-                        FROM usuario
-                        LEFT JOIN prestador ON usuario.id_usuario = prestador.id_prestador
-                        LEFT JOIN endereco ON usuario.id_usuario = endereco.id_usuario
-                        WHERE usuario.tipo_perfil = ?";
 
-            $stmt = $this->connection->prepare($sql);
+    /**
+     * Buscar todos os usuários ou apenas prestadores
+     */
+    public function buscarTodos(string $tipoUsuario = null): array
+    {
+        if ($tipoUsuario === "prestador") {
+            $sql = "SELECT 
+                        u.id_usuario, u.nome, u.sobrenome, u.email, u.cpf, u.telefone,
+                        u.nacionalidade, u.data_nascimento, u.nota_reputacao, u.genero,
+                        p.cnpj, p.img_rg, p.chave_pix, p.status_avaliacao,
+                        e.estado, e.cidade, e.bairro, e.logradouro, e.numero_casa, e.cep
+                    FROM usuario u
+                    LEFT JOIN prestador p ON u.id_usuario = p.id_prestador
+                    LEFT JOIN endereco e ON u.id_usuario = e.id_usuario
+                    WHERE u.tipo_perfil = ?";
+
+            $stmt = $this->conexao->prepare($sql);
             $stmt->bind_param("s", $tipoUsuario);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            return $result->fetch_all(MYSQLI_ASSOC);
         } else {
             $sql = "SELECT * FROM usuario";
-            $stmt = $this->connection->prepare($sql);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            return $result->fetch_all(MYSQLI_ASSOC);
+            $stmt = $this->conexao->prepare($sql);
         }
+
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_all(MYSQLI_ASSOC);
     }
-    public function buscarPorId($tipoUsuario, $id)
+
+    /**
+     * Buscar usuário por ID
+     */
+    public function buscarPorId(string $tipoUsuario, int $id): ?array
     {
-        if ($tipoUsuario == "prestador") {
-            $sql = "SELECT * FROM usuario LEFT JOIN prestador ON usuario.id_usuario = prestador.id_prestador WHERE tipo_perfil = ? AND id_usuario = ?";
-            $stmt = $this->connection->prepare($sql);
+        if ($tipoUsuario === "prestador") {
+            $sql = "SELECT * 
+                    FROM usuario u 
+                    LEFT JOIN prestador p ON u.id_usuario = p.id_prestador 
+                    WHERE u.tipo_perfil = ? AND u.id_usuario = ?";
+            $stmt = $this->conexao->prepare($sql);
             $stmt->bind_param("si", $tipoUsuario, $id);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            return $result->fetch_assoc();
         } else {
             $sql = "SELECT * FROM usuario WHERE id_usuario = ?";
-            $stmt = $this->connection->prepare($sql);
+            $stmt = $this->conexao->prepare($sql);
             $stmt->bind_param("i", $id);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            return $result->fetch_assoc();
-        }
-    }
-    public function deletarPorID($tipoUsuario, $id)
-    {
-
-        $sqlEndereco = "DELETE FROM endereco WHERE id_usuario = ?";
-        $stmtEndereco = $this->connection->prepare($sqlEndereco);
-        $stmtEndereco->bind_param("i", $id);
-        $resultEndereco = $stmtEndereco->execute();
-        if ($tipoUsuario == "prestador") {
-
-            $sql1 = "DELETE FROM prestador WHERE id_prestador = ?";
-            $stmt1 = $this->connection->prepare($sql1);
-            $stmt1->bind_param("i", $id);
-            $result1 = $stmt1->execute();
-
-
-            $sql2 = "DELETE FROM usuario WHERE id_usuario = ?";
-            $stmt2 = $this->connection->prepare($sql2);
-            $stmt2->bind_param("i", $id);
-            $result2 = $stmt2->execute();
-
-        } else if ($tipoUsuario == "solicitante") {
-
-            $sql1 = "DELETE FROM solicitante WHERE id_solicitante = ?";
-            $stmt1 = $this->connection->prepare($sql1);
-            $stmt1->bind_param("i", $id);
-            $result1 = $stmt1->execute();
-
-            $sql2 = "DELETE FROM usuario WHERE id_usuario = ?";
-            $stmt2 = $this->connection->prepare($sql2);
-            $stmt2->bind_param("i", $id);
-            $result2 = $stmt2->execute();
         }
 
-        return $result1 && $result2 && $resultEndereco;
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_assoc() ?: null;
     }
 
-
-    public function alterar($tipoUsuario, $id, $nomeColuna, $novoValor)
+    /**
+     * Deletar usuário e dados relacionados
+     */
+    public function deletarPorID(string $tipoUsuario, int $id): bool
     {
-        if ($tipoUsuario == "prestador") {
-            $colunasPermitidas = ['cnpj', 'img_rg', 'chave_pix', 'status_avaliacao'];
-            if (!in_array($nomeColuna, $colunasPermitidas)) {
-                throw new Exception("Coluna inválida.");
+        $resultEndereco = $this->executarQuery("DELETE FROM endereco WHERE id_usuario = ?", "i", [$id]);
+
+        if ($tipoUsuario === "prestador") {
+            $resultPrestador = $this->executarQuery("DELETE FROM prestador WHERE id_prestador = ?", "i", [$id]);
+        } else {
+            $resultPrestador = $this->executarQuery("DELETE FROM solicitante WHERE id_solicitante = ?", "i", [$id]);
+        }
+
+        $resultUsuario = $this->executarQuery("DELETE FROM usuario WHERE id_usuario = ?", "i", [$id]);
+
+        return $resultEndereco && $resultPrestador && $resultUsuario;
+    }
+
+    /**
+     * Atualizar coluna específica de usuário ou prestador
+     */
+    public function alterar(string $tipoUsuario, int $id, string $nomeColuna, $novoValor): bool
+    {
+        $colunasPermitidasPrestador = ['cnpj', 'img_rg', 'chave_pix', 'status_avaliacao'];
+        $colunasPermitidasUsuario = ['nome', 'sobrenome', 'email', 'senha', 'cpf', 'telefone', 'nacionalidade', 'data_nascimento', 'nota_reputacao', 'genero', 'tipo_perfil'];
+
+        if ($tipoUsuario === "prestador") {
+            if (!in_array($nomeColuna, $colunasPermitidasPrestador)) {
+                throw new Exception("Coluna inválida para prestador.");
             }
             $sql = "UPDATE prestador SET $nomeColuna = ? WHERE id_prestador = ?";
-            $stmt = $this->connection->prepare($sql);
-            $stmt->bind_param("si", $novoValor, $id);
-            return $stmt->execute();
         } else {
-            $colunasPermitidas = ['nome', 'sobrenome', 'email', 'senha', 'cpf', 'telefone', 'nacionalidade', 'data_nascimento', 'nota_reputacao', 'genero', 'tipo_perfil'];
-            if (!in_array($nomeColuna, $colunasPermitidas)) {
-                throw new Exception("Coluna inválida.");
+            if (!in_array($nomeColuna, $colunasPermitidasUsuario)) {
+                throw new Exception("Coluna inválida para usuário.");
             }
             $sql = "UPDATE usuario SET $nomeColuna = ? WHERE id_usuario = ?";
-            $stmt = $this->connection->prepare($sql);
-            $stmt->bind_param("si", $novoValor, $id);
-            return $stmt->execute();
         }
+
+        return $this->executarQuery($sql, "si", [$novoValor, $id]);
     }
 
-    public function enviarMensagem($id_remetende, $id_destinatario, $mensagem)
+    /**
+     * Enviar mensagem
+     */
+    public function enviarMensagem(int $idRemetente, int $idDestinatario, string $mensagem): bool
     {
-        $sql = "INSERT INTO mensagem (id_remetente, id_destinatario, mensagem) VALUES (?,?,?)";
-        $stmt = $this->connection->prepare($sql);
-        $stmt->bind_param('iis', $id_remetende, $id_destinatario, $mensagem);
+        $sql = "INSERT INTO mensagem (id_remetente, id_destinatario, mensagem) VALUES (?, ?, ?)";
+        return $this->executarQuery($sql, "iis", [$idRemetente, $idDestinatario, $mensagem]);
+    }
+
+    /**
+     * Buscar usuário por e-mail
+     */
+    public function buscarPorEmail(string $email): ?array
+    {
+        $sql = "SELECT * FROM usuario WHERE email = ?";
+        $stmt = $this->conexao->prepare($sql);
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $user = $stmt->get_result()->fetch_assoc();
+
+        if (!$user) return null;
+
+        if ($user['tipo_perfil'] === 'prestador') {
+            $sqlPrestador = "SELECT * FROM prestador WHERE id_prestador = ?";
+            $stmtPrestador = $this->conexao->prepare($sqlPrestador);
+            $stmtPrestador->bind_param("i", $user['id_usuario']);
+            $stmtPrestador->execute();
+            $prestador = $stmtPrestador->get_result()->fetch_assoc() ?: [];
+
+            if (isset($prestador['status_avaliacao']) && $prestador['status_avaliacao'] === 'naoverificado') {
+                return null;
+            }
+
+            return array_merge($user, $prestador);
+        }
+
+        if ($user['tipo_perfil'] === 'administrador') return null;
+
+        return $user;
+    }
+
+    /**
+     * Método auxiliar para executar queries com bind
+     */
+    private function executarQuery(string $sql, string $tipos, array $params): bool
+    {
+        $stmt = $this->conexao->prepare($sql);
+        $stmt->bind_param($tipos, ...$params);
         return $stmt->execute();
     }
-
-    public function buscarPorEmail($email)
-    {
-        $sql1 = "SELECT * FROM usuario WHERE email = ?";
-        $stmt1 = $this->connection->prepare($sql1);
-        $stmt1->bind_param("s", $email);
-        $stmt1->execute();
-        $result1 = $stmt1->get_result();
-        if ($result1->num_rows == 0) {
-            return null;
-        }
-        $user = $result1->fetch_assoc();
-        if ($user['tipo_perfil'] == 'prestador') {
-            $sql2 = "SELECT * FROM prestador WHERE id_prestador = ?";
-            $stmt2 = $this->connection->prepare($sql2);
-            $stmt2->bind_param("i", $user['id_usuario']);
-            $stmt2->execute();
-            $result2 = $stmt2->get_result();
-            if ($result2->num_rows == 0) {
-                $userPrestador['cnpj'] = null;
-                $userPrestador['img_rg'] = null;
-                $userPrestador['chave_pix'] = null;
-                $userPrestador['status_avaliacao'] = null;
-
-                return $user = array_merge($user, $userPrestador);
-            }
-            $userPrestador = $result2->fetch_assoc();
-            if ($userPrestador['status_avaliacao'] == 'naoverificado') {
-                return null;
-            } else {
-                return $user = array_merge($user, $userPrestador);
-            }
-        } else if ($user['tipo_perfil'] == 'administrador') {
-            return null;
-        } else {
-            return $user;
-        }
-    }
 }
-
-
 ?>

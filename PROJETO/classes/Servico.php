@@ -1,14 +1,16 @@
 <?php
-class Servico{
+require_once __DIR__ . '/../config/Conexao.php';
+class Servico
+{
     private $conexao;
     private $status = "disponivel";
-    private $conn;
 
-    public function __construct(){
-        
-        include __DIR__ . '/../config/conexao.php'; // Usando __DIR__ para garantir o caminho correto
-        $this->conexao = conectaDB();
+    public function __construct()
+    {
+        // Ajustando o caminho para incluir o arquivo de conexão corretamente
+        $this->conexao = Conexao::getInstance()->getConexao();
     }
+
 
     // Salvar serviço no banco
     public function salvar($titulo, $descricao, $categoria, $regiao, $caminhoImgServico, $preco, $idSolicitante)

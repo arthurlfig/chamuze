@@ -1,7 +1,8 @@
 <?php
+
 session_start();
-include "../classes/Servico.php";
-include "../helpers/biblioteca.php";
+require_once "../classes/Servico.php";
+require_once "../helpers/biblioteca.php";
 
 //Verificação de restrição de acesso
 verificarSessaoExpirada();

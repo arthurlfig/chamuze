@@ -6,7 +6,13 @@
   <component name="ChangeListManager">
     <list default="true" id="7130353a-d800-48a4-b22f-5b98d288774d" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PROJETO/classes/Cadastro.php" beforeDir="false" afterPath="$PROJECT_DIR$/PROJETO/classes/Cadastro.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PROJETO/classes/Login.php" beforeDir="false" afterPath="$PROJECT_DIR$/PROJETO/classes/Login.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PROJETO/classes/Proposta.php" beforeDir="false" afterPath="$PROJECT_DIR$/PROJETO/classes/Proposta.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PROJETO/classes/Servico.php" beforeDir="false" afterPath="$PROJECT_DIR$/PROJETO/classes/Servico.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PROJETO/classes/Usuario.php" beforeDir="false" afterPath="$PROJECT_DIR$/PROJETO/classes/Usuario.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PROJETO/config/conexao.php" beforeDir="false" afterPath="$PROJECT_DIR$/PROJETO/config/Conexao.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PROJETO/helpers/biblioteca.php" beforeDir="false" afterPath="$PROJECT_DIR$/PROJETO/helpers/biblioteca.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -80,7 +86,9 @@
       <workItem from="1747682149821" duration="24000" />
       <workItem from="1749050636623" duration="130000" />
       <workItem from="1760396689695" duration="27000" />
-      <workItem from="1760396718629" duration="754000" />
+      <workItem from="1760396718629" duration="1501000" />
+      <workItem from="1760448588384" duration="2018000" />
+      <workItem from="1760465630897" duration="3051000" />
     </task>
     <servers />
   </component>
