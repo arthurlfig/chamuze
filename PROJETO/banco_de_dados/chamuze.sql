@@ -542,3 +542,20 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+CREATE TABLE `notificacao` (
+  `id_notificacao` int(11) NOT NULL AUTO_INCREMENT,
+  `id_remetente` int(11) NOT NULL,
+  `id_destinatario` int(11) NOT NULL,
+  `id_servico` int(11) DEFAULT NULL,
+  `tipo_notificacao` enum('solicitacao','aceito','rejeitado') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `mensagem` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `lida` tinyint(1) DEFAULT 0,
+  `data_criacao` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_notificacao`),
+  KEY `id_remetente` (`id_remetente`),
+  KEY `id_destinatario` (`id_destinatario`),
+  KEY `id_servico` (`id_servico`),
+  CONSTRAINT `notificacao_ibfk_1` FOREIGN KEY (`id_remetente`) REFERENCES `usuario` (`id_usuario`) ON DELETE CASCADE,
+  CONSTRAINT `notificacao_ibfk_2` FOREIGN KEY (`id_destinatario`) REFERENCES `usuario` (`id_usuario`) ON DELETE CASCADE,
+  CONSTRAINT `notificacao_ibfk_3` FOREIGN KEY (`id_servico`) REFERENCES `servico` (`id_servico`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

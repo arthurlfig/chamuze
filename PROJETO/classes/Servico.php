@@ -1,12 +1,11 @@
 <?php
-class Servico
-{
+class Servico{
     private $conexao;
     private $status = "disponivel";
+    private $conn;
 
-    public function __construct()
-    {
-        // Ajustando o caminho para incluir o arquivo de conexão corretamente
+    public function __construct(){
+        
         include __DIR__ . '/../config/conexao.php'; // Usando __DIR__ para garantir o caminho correto
         $this->conexao = conectaDB();
     }
@@ -207,5 +206,17 @@ class Servico
         $stmt->bind_param("iids", $id_servico, $id_prestador, $novo_preco, $mensagem);
         return $stmt->execute();
     }
+    public function atualizarStatus($id_servico, $novoStatus, $id_prestador)
+    {
+        $sql = "UPDATE servico 
+                SET status_servico = ?, id_prestador = ? 
+                WHERE id_servico = ?";
+        $stmt = $this->conexao->prepare($sql);
+        $stmt->bind_param("sii", $novoStatus, $id_prestador, $id_servico);
+        return $stmt->execute();
+    }
+
+
 }
+
 ?>
