@@ -1,31 +1,45 @@
 <?php
 session_start();
-include "../classes/Cadastro.php";
 
-// Verifica se o botão de envio foi pressionado
-if (isset($_POST['btn_enviar'])) {
+require_once __DIR__ . '/../classes/UsuarioFactoryProvider.php';
+require_once __DIR__ . '/../classes/DadosUsuario.php';
+require_once __DIR__ . '/../classes/Cadastro.php'; 
 
-    // Função para limpar o input (mantém apenas números)
+if (!isset($_POST['btn_enviar'])) {
+    header("location:../cadastro.php");
+    exit();
+}
+
+try {
+    
     function limparInput($valor) {
         return preg_replace('/[^0-9]/', '', $valor);
     }
 
-    // Limpeza dos dados
     $_POST['cpf'] = limparInput($_POST['cpf']);
     $_POST['telefone'] = limparInput($_POST['telefone']);
-
+    
     if (isset($_POST['cep'])) {
         $_POST['cep'] = limparInput($_POST['cep']);
     }
 
-    if ($_POST['tipo_perfil'] === 'prestador') {
+    if ($_POST['tipo_perfil'] === 'prestador' && isset($_POST['cnpj'])) {
         $_POST['cnpj'] = limparInput($_POST['cnpj']);
     }
-
-    // Validação de senha
+    
     $senha = $_POST['senha'];
-    $erroSenha = false;
+    $senhaConfirmada = $_POST['senhaConfirmada'];
 
+    if ($senha !== $senhaConfirmada) {
+        if ($_POST['tipo_perfil'] === 'administrador') {
+            header('location:../administrador/cadastroAdm.php?erro=1');
+        } else {
+            header('location:../cadastro.php?erro=2&tipo_perfil=' . $_POST['tipo_perfil']);
+        }
+        exit();
+    }
+
+    $erroSenha = false;
     if (strlen($senha) < 8 ||
         !preg_match('/[A-Z]/', $senha) ||
         !preg_match('/[a-z]/', $senha) ||
@@ -42,20 +56,15 @@ if (isset($_POST['btn_enviar'])) {
         }
         exit();
     }
-
-    // Validação de nome e sobrenome
-    $nome = $_POST['nome'];
-    $snome = $_POST['snome'];
-    $erroNome = false;
+    
+    $nome = trim($_POST['nome']);
+    $snome = trim($_POST['snome']);
 
     if (empty($nome) || empty($snome) ||
         !preg_match('/^[a-zA-ZÀ-ÿ\s]+$/', $nome) ||
         !preg_match('/^[a-zA-ZÀ-ÿ\s]+$/', $snome) ||
         strlen($nome) < 2 || strlen($snome) < 2) {
-        $erroNome = true;
-    }
-
-    if ($erroNome) {
+        
         if ($_POST['tipo_perfil'] === 'administrador') {
             header('location:../administrador/cadastroAdm.php?erro=8');
         } else {
@@ -64,117 +73,165 @@ if (isset($_POST['btn_enviar'])) {
         exit();
     }
 
-    // Confirmação de senha
-    if ($_POST['senha'] !== $_POST['senhaConfirmada']) {
-        if ($_POST['tipo_perfil'] === 'administrador') {
-            header('location:../administrador/cadastroAdm.php?erro=1');
-        } else {
-            header('location:../cadastro.php?erro=2&tipo_perfil=' . $_POST['tipo_perfil']);
-        }
-        exit();
-    }
+    $cadastroTemp = new Cadastro(
+        $nome,
+        $snome,
+        $_POST['email'],
+        $senha,
+        $_POST['cpf'],
+        $_POST['telefone'],
+        $_POST['datanasc'],
+        $_POST['genero'],
+        $_POST['tipo_perfil']
+    );
 
-    // Criação de objeto Cadastro
-    if ($_POST['tipo_perfil'] === 'prestador') {
-        $fotoRG = $_FILES['img_rg'];
-        $extensao = pathinfo($fotoRG['name'], PATHINFO_EXTENSION);
-        $extensoesPermitidas = ['jpg', 'jpeg', 'png'];
-
-        $novoNome = uniqid() . "." . $extensao;
-        $caminho = '../uploads/rg/' . $novoNome;
-
-        if (!in_array(strtolower($extensao), $extensoesPermitidas)) {
-            header('location:../cadastro.php?erro=3&tipo_perfil=' . $_POST['tipo_perfil']);
-            exit();
-        }
-
-        if (move_uploaded_file($fotoRG['tmp_name'], $caminho)) {
-            $cadastro = new Cadastro(
-                $_POST['nome'],
-                $_POST['snome'],
-                $_POST['email'],
-                $_POST['senha'],
-                $_POST['cpf'],
-                $_POST['telefone'],
-                $_POST['datanasc'],
-                $_POST['genero'],
-                $_POST['tipo_perfil'],
-                $_POST['cnpj'],
-                $caminho,
-                $_POST['chavepix']
-            );
-        } else {
-            header('location:../cadastro.php?erro=4&tipo_perfil=' . $_POST['tipo_perfil']);
-            exit();
-        }
-    } else {
-        $cadastro = new Cadastro(
-            $_POST['nome'],
-            $_POST['snome'],
-            $_POST['email'],
-            $_POST['senha'],
-            $_POST['cpf'],
-            $_POST['telefone'],
-            $_POST['datanasc'],
-            $_POST['genero'],
-            $_POST['tipo_perfil']
-        );
-    }
-
-    // Verificações no banco de dados
-    $usuario = $cadastro->buscarNoBanco();
-    $cpf = $cadastro->buscarCPF();
-    $cnpj = $cadastro->buscarCNPJ();
-
-    if ($usuario) {
+    if ($cadastroTemp->buscarNoBanco()) {
         if ($_POST['tipo_perfil'] === 'administrador') {
             header('location:../administrador/cadastroAdm.php?erro=1');
         } else {
             header('location:../cadastro.php?erro=1&tipo_perfil=' . $_POST['tipo_perfil']);
         }
         exit();
-    } elseif ($cpf) {
+    }
+
+    if ($cadastroTemp->buscarCPF()) {
         if ($_POST['tipo_perfil'] === 'administrador') {
             header('location:../administrador/cadastroAdm.php?erro=4');
         } else {
             header('location:../cadastro.php?erro=5&tipo_perfil=' . $_POST['tipo_perfil']);
         }
         exit();
-    } elseif ($cnpj) {
-        header('location:../cadastro.php?erro=6&tipo_perfil=' . $_POST['tipo_perfil']);
-        exit();
-    } else {
-        // Salvar dados no banco
+    }
+    
+    $caminhoImgRg = null;
+    $chavePix = null;
+    $cnpj = null;
+
+    if ($_POST['tipo_perfil'] === 'prestador') {
+
+        $cadastroTempPrest = new Cadastro(
+            $nome,
+            $snome,
+            $_POST['email'],
+            $senha,
+            $_POST['cpf'],
+            $_POST['telefone'],
+            $_POST['datanasc'],
+            $_POST['genero'],
+            $_POST['tipo_perfil'],
+            $_POST['cnpj']
+        );
+
+        if ($cadastroTempPrest->buscarCNPJ()) {
+            header('location:../cadastro.php?erro=6&tipo_perfil=' . $_POST['tipo_perfil']);
+            exit();
+        }
+
+        if (!isset($_FILES['img_rg']) || $_FILES['img_rg']['error'] !== UPLOAD_ERR_OK) {
+            header('location:../cadastro.php?erro=4&tipo_perfil=' . $_POST['tipo_perfil']);
+            exit();
+        }
+
+        $fotoRG = $_FILES['img_rg'];
+        $extensao = strtolower(pathinfo($fotoRG['name'], PATHINFO_EXTENSION));
+        $extensoesPermitidas = ['jpg', 'jpeg', 'png'];
+
+        if (!in_array($extensao, $extensoesPermitidas)) {
+            header('location:../cadastro.php?erro=3&tipo_perfil=' . $_POST['tipo_perfil']);
+            exit();
+        }
+
+        $novoNome = uniqid() . "." . $extensao;
+        $caminho = '../uploads/rg/' . $novoNome;
+
+        if (!is_dir('../uploads/rg/')) {
+            mkdir('../uploads/rg/', 0755, true);
+        }
+
+        if (!move_uploaded_file($fotoRG['tmp_name'], $caminho)) {
+            header('location:../cadastro.php?erro=4&tipo_perfil=' . $_POST['tipo_perfil']);
+            exit();
+        }
+
+        $caminhoImgRg = $caminho;
+        $chavePix = $_POST['chavepix'];
+        $cnpj = $_POST['cnpj'];
+    }
+    
+    $tipoPerfil = $_POST['tipo_perfil'];
+
+    if ($tipoPerfil === 'administrador') {
+        $cadastro = new Cadastro(
+            $nome,
+            $snome,
+            $_POST['email'],
+            $senha,
+            $_POST['cpf'],
+            $_POST['telefone'],
+            $_POST['datanasc'],
+            $_POST['genero'],
+            $tipoPerfil
+        );
+        
         $cadastro->salvar();
-        $usuario = $cadastro->buscarNoBanco();
-        $usuarioid = $usuario['id_usuario'];
-
-        if ($_POST['tipo_perfil'] != 'administrador') {
-            $cadastro->salvarEndereco(
-                $_POST['estado'],
-                $_POST['cidade'],
-                $_POST['bairro'],
-                $_POST['logradouro'],
-                $_POST['numero_casa'],
-                $_POST['cep'],
-                $usuarioid
-            );
-        }
-
-        if ($_POST['tipo_perfil'] === 'administrador') {
-            header('location:../administrador/cadastroAdm.php?erro=3');
-        } else {
-            header('location:../login.php?erro=0');
-        }
+        header('location:../administrador/cadastroAdm.php?erro=3');
         exit();
     }
 
-} else {
-    // Caso o botão não tenha sido pressionado
-    if ($_POST['tipo_perfil'] === 'administrador') {
-        header("location:../administrador/cadastroAdm.php");
+    if ($tipoPerfil === 'solicitante') {
+        $dados = DadosUsuario::paraSolicitante(
+            $nome,
+            $snome,
+            $_POST['email'],
+            $_POST['telefone'],
+            $senha,
+            $_POST['cpf'],
+            $_POST['datanasc'],
+            $_POST['genero'],
+            $_POST['logradouro'] ?? null,
+            $_POST['numero_casa'] ?? null,
+            $_POST['bairro'] ?? null,
+            $_POST['cidade'] ?? null,
+            $_POST['estado'] ?? null,
+            $_POST['cep'] ?? null
+        );
+    } else { // prestador
+        $dados = DadosUsuario::paraPrestador(
+            $nome,
+            $snome,
+            $_POST['email'],
+            $_POST['telefone'],
+            $senha,
+            $_POST['cpf'],
+            $_POST['datanasc'],
+            $_POST['genero'],
+            $cnpj,
+            $caminhoImgRg,
+            $chavePix,
+            $_POST['logradouro'],
+            $_POST['numero_casa'],
+            $_POST['bairro'],
+            $_POST['cidade'],
+            $_POST['estado'],
+            $_POST['cep']
+        );
+    }
+
+    $factory = UsuarioFactoryProvider::getFactory($tipoPerfil);
+    $idUsuario = $factory->criarERegistrar($dados);
+
+    header('location:../login.php?erro=0');
+    exit();
+
+} catch (Exception $e) {
+
+    error_log("Erro no cadastro: " . $e->getMessage());
+    
+    if (isset($_POST['tipo_perfil']) && $_POST['tipo_perfil'] === 'administrador') {
+        header('location:../administrador/cadastroAdm.php?erro=9');
     } else {
-        header("location:../cadastro.php");
+        $tipo = $_POST['tipo_perfil'] ?? 'solicitante';
+        header('location:../cadastro.php?erro=9&tipo_perfil=' . $tipo);
     }
     exit();
 }
