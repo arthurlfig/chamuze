@@ -1,9 +1,9 @@
 <?php
 session_start();
-include '../classes/Usuario.php';
+include '../classes/UsuarioFacade.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['usuario'])) {
-    $usuario = new Usuario();
+    $usuario = new UsuarioFacade();
     $id = $_SESSION['usuario']['id_usuario'];
 
 

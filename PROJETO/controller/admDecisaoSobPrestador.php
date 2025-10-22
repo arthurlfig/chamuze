@@ -1,6 +1,6 @@
 <?php
-    include "../classes/Usuario.php";
-    $usuario = new Usuario();
+    include "../classes/UsuarioFacade.php";
+    $usuario = new UsuarioFacade();
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST'){  
         $id = $_POST['id_usuario'] ?? null;

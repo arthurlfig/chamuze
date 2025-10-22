@@ -1,9 +1,9 @@
 <?php
 session_start();
 
-include '../classes/Usuario.php';
+include '../classes/UsuarioFacade.php';
 
-$usuario = new Usuario();
+$usuario = new UsuarioFacade();
 if(isset($_POST['envio_mensagem'])){
     $usuario->enviarMensagem($_SESSION['usuario']['id_usuario'], $_POST['id_destinatario'], $_POST['mensagem']);
 

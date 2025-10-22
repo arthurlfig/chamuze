@@ -7,8 +7,8 @@ verificarAcesso('administrador');
 verificarSessaoExpirada();
 
 
-include "../classes/Usuario.php";
-$usuario = new Usuario();
+include "../classes/UsuarioFacade.php";
+$usuario = new UsuarioFacade();
 $usuarios = $usuario->buscarTodos("prestador");
 $naoVerificados = array_filter($usuarios, fn($u) => $u['status_avaliacao'] == 'naoverificado');
 ?>

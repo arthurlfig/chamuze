@@ -1,7 +1,7 @@
 <?php
 session_start();
 include "../classes/Servico.php";
-include "../classes/Usuario.php";
+include "../classes/UsuarioFacade.php";
 
 include "../helpers/biblioteca.php";
 
@@ -10,7 +10,7 @@ verificarSessaoExpirada();
 
 $servico = new Servico();
     $servicos = $servico->buscarTodos(); // Ajuste conforme necessário
-    $usuarioObj = new Usuario();
+    $usuarioObj = new UsuarioFacade();
 
 $servico = new Servico();
 if (isset($_POST['id_servico'])) {

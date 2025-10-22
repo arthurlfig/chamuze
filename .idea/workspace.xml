@@ -10,7 +10,7 @@
       <change beforePath="$PROJECT_DIR$/PROJETO/classes/Login.php" beforeDir="false" afterPath="$PROJECT_DIR$/PROJETO/classes/Login.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PROJETO/classes/Proposta.php" beforeDir="false" afterPath="$PROJECT_DIR$/PROJETO/classes/Proposta.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PROJETO/classes/Servico.php" beforeDir="false" afterPath="$PROJECT_DIR$/PROJETO/classes/Servico.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/PROJETO/classes/Usuario.php" beforeDir="false" afterPath="$PROJECT_DIR$/PROJETO/classes/Usuario.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/PROJETO/classes/UsuarioFacade.php" beforeDir="false" afterPath="$PROJECT_DIR$/PROJETO/classes/UsuarioFacade.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PROJETO/config/conexao.php" beforeDir="false" afterPath="$PROJECT_DIR$/PROJETO/config/Conexao.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/PROJETO/helpers/biblioteca.php" beforeDir="false" afterPath="$PROJECT_DIR$/PROJETO/helpers/biblioteca.php" afterDir="false" />
     </list>

@@ -6,8 +6,8 @@ include "../helpers/biblioteca.php";
 verificarAcesso('administrador');
 verificarSessaoExpirada();
 
-include "../classes/Usuario.php";
-$usuario = new Usuario();
+include "../classes/UsuarioFacade.php";
+$usuario = new UsuarioFacade();
 
 $emailPesquisa = isset($_GET['pesquisa']) && $_GET['pesquisa'] !== 'null'  ? $_GET['pesquisa'] : null;
 
